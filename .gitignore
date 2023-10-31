@@ -1,8 +1,8 @@
 adxl_results/belts/*.csv
 adxl_results/inputshaper/*.csv
 adxl_results/vibrations/*.tar.gz
-config
-KAMP
-macros
-moonraker
-scripts
+#config
+#KAMP
+#macros
+#moonraker
+#scripts
