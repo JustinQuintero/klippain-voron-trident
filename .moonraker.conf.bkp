@@ -38,7 +38,6 @@ enable_auto_refresh = True
 [update_manager Klippain]
 type = git_repo
 path = ~/klippain_config
-channel = beta
 origin = https://github.com/Frix-x/klippain.git
 primary_branch = main
 managed_services = moonraker klipper
@@ -75,6 +74,18 @@ path = ~/crowsnest
 origin = https://github.com/mainsail-crew/crowsnest.git
 install_script = tools/install.sh
 
+[update_manager happy-hare]
+type = git_repo
+path = ~/Happy-Hare
+origin = https://github.com/moggieuk/Happy-Hare.git
+primary_branch = main
+managed_services = klipper
+
+[mmu_server]
+enable_file_preprocessor = True
+enable_toolchange_next_pos = True
+update_spoolman_location = True
+
 [update_manager Klipper-Adaptive-Meshing-Purging]
 type = git_repo
 channel = dev
@@ -83,13 +94,24 @@ origin = https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
 managed_services = klipper
 primary_branch = main
 
+[update_manager Klippain-ShakeTune]
+type = git_repo
+origin = https://github.com/Frix-x/klippain-shaketune.git
+path = ~/klippain_shaketune
+virtualenv = /home/pi/klippy-env
+requirements = requirements.txt
+system_dependencies = system-dependencies.json
+primary_branch = main
+managed_services = klipper
+
 [update_manager KlipperScreen]
 type = git_repo
 path = ~/KlipperScreen
-origin = https://github.com/jordanruthe/KlipperScreen.git
+origin = https://github.com/moggieuk/KlipperScreen-Happy-Hare-Edition.git
 env = ~/.KlipperScreen-env/bin/python
 requirements = scripts/KlipperScreen-requirements.txt
 install_script = scripts/KlipperScreen-install.sh
+managed_services = KlipperScreen
 
 [update_manager led_effect]
 type = git_repo
@@ -99,13 +121,13 @@ is_system_service = False
 
 [update_manager mobileraker]
 type = git_repo
-path = /home/pi/mobileraker_companion
+path = ~/mobileraker_companion
 origin = https://github.com/Clon1998/mobileraker_companion.git
 primary_branch = main
 managed_services = mobileraker
-env = /home/pi/mobileraker-env/bin/python
+virtualenv = ~/mobileraker-env
 requirements = scripts/mobileraker-requirements.txt
-install_script = scripts/install-mobileraker-companion.sh
+install_script = scripts/install.sh
 
 [update_manager sonar]
 type = git_repo
@@ -114,13 +136,6 @@ origin = https://github.com/mainsail-crew/sonar.git
 primary_branch = main
 managed_services = sonar
 install_script = tools/install.sh
-
-[update_manager spyglass]
-type = git_repo
-channel = beta
-path = ~/spyglass
-origin = https://github.com/roamingthings/spyglass.git
-managed_services = spyglass
 
 [update_manager timelapse]
 type = git_repo
