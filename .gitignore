@@ -4,5 +4,5 @@ adxl_results/vibrations/*.tar.gz
 config
 KAMP
 macros
-moonraker/
+#moonraker
 scripts
