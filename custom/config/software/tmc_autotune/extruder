@@ -1,0 +1,3 @@
+[autotune_tmc extruder]
+motor: ldo-36sth20-1004ahg-9T
+sgt: 35

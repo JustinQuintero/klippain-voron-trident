@@ -1,0 +1,4 @@
+[autotune_tmc stepper_z]
+motor: oukeda-ok42hc40-204a306n84
+tuning_goal: performance
+sg4_thrs: 80
