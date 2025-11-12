@@ -70,21 +70,6 @@ managed_services = klipper
 primary_branch = main
 install_script = install.sh
 
-[update_manager octoeverywhere]
-type = git_repo
-channel = beta
-path = /home/pi/octoeverywhere
-origin = https://github.com/QuinnDamerell/OctoPrint-OctoEverywhere.git
-env = /home/pi/octoeverywhere-env/bin/python
-requirements = requirements.txt
-install_script = install.sh
-managed_services = 
-	octoeverywhere
-
-[announcements]
-subscriptions = 
-	octoeverywhere
-
 [update_manager crowsnest]
 type = git_repo
 path = ~/crowsnest
@@ -147,8 +132,6 @@ origin = https://github.com/mainsail-crew/sonar.git
 primary_branch = main
 managed_services = sonar
 install_script = tools/install.sh
-
-[timelapse]
 
 [update_manager timelapse]
 type = git_repo
