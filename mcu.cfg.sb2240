@@ -41,8 +41,8 @@
 
 # ------------------------------------------------------------------- EXTRUDER DRIVER ----> optional, but only one line need to be selected
 ### --------------------------------------------------------------------------------------
-[include config/hardware/extruder/TMC/TMC2209.cfg]
-# [include config/hardware/extruder/TMC/TMC2240.cfg]
+# [include config/hardware/extruder/TMC/TMC2209.cfg]
+[include config/hardware/extruder/TMC/TMC2240.cfg]
 # ----------------------------------------------------------------------------------------
 
 
@@ -101,92 +101,96 @@ aliases:
     # SERVO_PIN=MCU_SERVOS ,
 
 
-
-#-------------------------------------------------------#
-#### LDO Nighthawk 36 toolhead v1.4 MCU definition ########
-#-------------------------------------------------------#
+#--------------------------------------------#
+#### BTT SB2240 v1.0 MCU definition ########
+#--------------------------------------------#
 
 [mcu toolhead]
 ##--------------------------------------------------------------------
-serial: /dev/serial/by-id/usb-Klipper_rp2040_3232323236193DFB-if00 ##### <---  change-me-to-the-correct-serial  hint: ls /dev/serial/by-id/*   #
+canbus_uuid: b550cadca8b9
 ##--------------------------------------------------------------------
 
-# If you want to override the wiring of the LDO Nighthawk, keep in mind that this
+# If you want to override the wiring of the BTT SB, keep in mind that this
 # board is defined using the "toolhead" name. So you should use "pin: toolhead:PIN_NAME"
 # in your own overrides.cfg files.
 
-[include custom/config/mcu_definitions/toolhead/LDO_Nitehawk-36_v1.4.cfg] # Do not remove this line
-[board_pins nitehawk_mcu]
+[include config/mcu_definitions/toolhead/BTT_SB2240_v1.0.cfg] # Do not remove this line
+[board_pins sb2240_mcu]
 mcu: toolhead
 aliases:
-    E_STEP=MCU_EMOT_STEP , E_DIR=MCU_EMOT_DIR , E_ENABLE=MCU_EMOT_EN , E_TMCUART=MCU_EMOT_UART ,
+    E_STEP=MCU_MOTORDRIVE_STEP , E_DIR=MCU_MOTORDRIVE_DIR , E_ENABLE=MCU_MOTORDRIVE_ENABLE , E_DIAG=MCU_MOTORDRIVE_DIAG ,
+    # TMC2240 has no uart mode and since the SPI pins are shared with the SPI2, dedicated pin aliases are not allowed by klipper currently
 
-    EXTRUDER_SENSOR=MCU_FILAMENT_SENSOR ,
-    TOOLHEAD_SENSOR=MCU_ENDSTOP_X ,
-    PROBE_INPUT=MCU_HV_ENDSTOP ,
+    # X_STOP= , # Y_STOP= ,
+    PROBE_INPUT=MCU_PROBE ,
+    EXTRUDER_SENSOR=MCU_STOP2 ,
+    TOOLHEAD_SENSOR=MCU_STOP3 ,
 
-    E_HEATER=MCU_HEAT , E_TEMPERATURE=MCU_TEMP , CHAMBER_TEMPERATURE=MCU_HEAT_CHAMBER , 
-    NH_MCU_TEMP=MCU_NH_TEMP ,
+    E_HEATER=MCU_HE0 , E_TEMPERATURE=MCU_TH0 ,
 
-    PART_FAN=MCU_FAN1       , E_FAN=MCU_FAN0 ,
-    PART_FAN_TACHO=MCU_PWM1 , E_FAN_TACHO=MCU_PWM0 ,
+    PART_FAN=MCU_FAN2_PWM , E_FAN=MCU_FAN1_PWM ,
 
-    STATUS_NEOPIXEL=MCU_RGB , STATUS_BOARD=MCU_ACTIVITY_LED , 
+    STATUS_NEOPIXEL=MCU_RGB ,
 
-    ADXL_CS=MCU_ADXL_CS , ADXL_SCLK=MCU_ADXL_SCK , ADXL_MOSI=MCU_ADXL_MOSI , ADXL_MISO=MCU_ADXL_MISO ,
-
-    TX_PIN=MCU_ST_UART_TX , 
+    ADXL_CS=MCU_SPI2_NSS , ADXL_SCLK=MCU_SPI2_CLK , ADXL_MISO=MCU_SPI2_MISO , ADXL_MOSI=MCU_SPI2_MOSI ,
+    MAX31865_NSS=MCU_SPI1_NSS , MAX31865_CLK=MCU_SPI1_CLK , MAX31865_MOSI=MCU_SPI1_MOSI , MAX31865_MISO = MCU_SPI1_MISO , 
 
 
 #----------------------------------------#
-#  LDO Nighthawk-36 v1.4 pins remapping    #
+#     BTT SB2240 v1.0 pins remapping     #
 #----------------------------------------#
 
-# These pins overrides are automatically added when you select the LDO
+# These pins overrides are automatically added when you select a CANbus
 # toolhead MCU during the installation process. They should provide a
 # good base to work with. Feel free to adapt to your board if needed!
 
 [extruder]
 step_pin: toolhead:E_STEP
-dir_pin: !toolhead:E_DIR
+dir_pin: toolhead:E_DIR
 enable_pin: !toolhead:E_ENABLE
 heater_pin: toolhead:E_HEATER
 sensor_pin: toolhead:E_TEMPERATURE
-pullup_resistor: 2200
 
-[tmc2209 extruder]
-uart_pin: toolhead:E_TMCUART
-tx_pin: toolhead:TX_PIN
-sense_resistor: 0.100
-interpolate: false
-
-# [probe]
-# pin: ^toolhead:PROBE_INPUT
+[probe]
+pin: ^!toolhead:PROBE_INPUT
 
 [fan]
 pin: toolhead:PART_FAN
-#tachometer_pin: toolhead:PART_FAN_TACHO
 
 [heater_fan hotend_fan]
 pin: toolhead:E_FAN
-tachometer_pin: toolhead:E_FAN_TACHO
 
 ## Uncomment the following line if not using sensorless homing
 ## and having the X endstop plugged to the toolhead MCU
 # [stepper_x]
 # endstop_pin: ^toolhead:X_STOP
 
+# [neopixel sb_leds]
 [neopixel status_leds]
 pin: toolhead:STATUS_NEOPIXEL
 
-## PCB Activity Light
-[output_pin act_led]
-pin: toolhead:STATUS_BOARD
-
-## Nitehawk PCB temperature sensor
-# [temperature_sensor nh_temp]
-# sensor_type: CMFB103F3950FANT
-# sensor_pin: toolhead:NH_MCU_TEMP
-# pullup_resistor: 2200
-# min_temp: 0
-# max_temp: 100
+# Don't be surprised with the name of the pin. This is because the SPI bus is shared between motors and ADXL on this CANBoard.
+[tmc2240 extruder]
+cs_pin: toolhead:MCU_MOTOR_SPI_NSS
+spi_software_sclk_pin: toolhead:ADXL_SCLK
+spi_software_mosi_pin: toolhead:ADXL_MOSI
+spi_software_miso_pin: toolhead:ADXL_MISO
+# interpolate: False
+rref: 12000
+# stealthchop_threshold: 99999
+# driver_IHOLDDELAY: 8
+# driver_IRUNDELAY: 2
+# driver_TBL: 3
+# driver_TOFF: 4
+# driver_HEND: 3
+# driver_HSTRT: 4
+# driver_TPFD: 0
+# driver_PWM_AUTOSCALE: True
+# driver_PWM_AUTOGRAD: True
+# driver_PWM_GRAD: 12
+# driver_PWM_OFS: 40
+# driver_PWM_REG: 15
+# driver_PWM_LIM: 12
+# driver_SGT: 30
+# driver_SEMIN: 2
+# driver_SEMAX: 8
